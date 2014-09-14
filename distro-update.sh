@@ -1,5 +1,6 @@
 #!/bin/bash
-#Script to checkout the distro and update version a certain module 
+# Script to checkout the distro and update version a certain module. 
+# It can save the released version or next snapshot. 
 
 set -e -v
 
@@ -12,6 +13,12 @@ BRANCH=""
 
 CLONE_FOLDER="target/distribution"
 
+
+if [ "$(ps -p "$$" -o comm=)" != "bash" ]; then
+    # Taken from http://unix-linux.questionfor.info/q_unix-linux-programming_85038.html
+    bash "$0" "$@"
+    exit "$?"
+fi 
 
 help(){
     echo -e "\n[HELP]"
@@ -50,11 +57,24 @@ test_environment(){
 	    help 
 	    exit 1
 	fi 
+
+	if [[ "$$MAVEN_HOME" == "" ]]; then
+	    echo "[ERROR] MAVEN_HOME variable is unset. Make sure to set it using 'export MAVEN_HOME=/path/to/your/maven3/directory/'"
+	    exit 1
+	fi
 }
 
 
 read_arguments
 test_environment
+
+# If preparing a refapp distro release, commit the released version. Otherwise, next snapshot
+UPDATE_RELEASE=""
+if [[ "$PREPARING_DISTRO" == "true" ]]; then
+	UPDATE_RELEASE="$RELEASE_VERSION"
+else
+	UPDATE_RELEASE="$NEXT_DEV_VERSION"
+fi
 
 
 mkdir -p $CLONE_FOLDER
@@ -63,8 +83,15 @@ cd $CLONE_FOLDER
 git config push.default current
 git checkout $BRANCH
 
-sed -i'' -r "s|<$PROPERTY>[^<]+</$PROPERTY>|<$PROPERTY>$RELEASE</$PROPERTY>|" pom.xml
+sed -i'' -r "s|<$PROPERTY>[^<]+</$PROPERTY>|<$PROPERTY>$UPDATE_RELEASE</$PROPERTY>|" pom.xml
 git add pom.xml
-git commit -m "[Maven Release] Increasing version of $PROPERTY to $RELEASE"
+git commit -m "[Maven Release] Increasing version of $PROPERTY to $UPDATE_RELEASE"
+
+
+# When commiting a SNAPSHOT to the distro, make sure it's already deployed
+if [[ "$PREPARING_DISTRO" != "true"]]; then
+	$MAVEN_HOME/bin/mvn deploy -DskipTests
+fi
+
 git push
 
