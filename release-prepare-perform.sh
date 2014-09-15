@@ -38,6 +38,7 @@ test_environment(){
 	fi 
 
 	if [[ "$RELEASE_VERSION" == "" ]]; then 
+		echo "RELEASE_VERSION = $RELEASE_VERSION"
 	    echo "[ERROR] At least one command line argument is missing. See the list above for reference. " 
 	    help 
 	    exit 1
