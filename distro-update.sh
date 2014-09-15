@@ -2,7 +2,7 @@
 # Script to checkout the distro and update version a certain module. 
 # It can save the released version or next snapshot. 
 
-set -e -v
+set -e
 
 PROPERTY=""
 NEXT_DEV_VERSION=""
