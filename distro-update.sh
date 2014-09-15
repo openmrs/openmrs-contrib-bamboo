@@ -13,13 +13,6 @@ BRANCH=""
 
 CLONE_FOLDER="target/distribution"
 
-
-if [ "$(ps -p "$$" -o comm=)" != "bash" ]; then
-    # Taken from http://unix-linux.questionfor.info/q_unix-linux-programming_85038.html
-    bash "$0" "$@"
-    exit "$?"
-fi 
-
 help(){
     echo -e "\n[HELP]"
     echo "Script to update version in refapp distro"
