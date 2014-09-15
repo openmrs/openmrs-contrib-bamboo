@@ -21,25 +21,6 @@ help(){
     echo -e "\t-r release-version: version to be released"
 
 
-read_arguments(){
-	ARGUMENTS_OPTS="r:d:p:d:h"
-
-	while getopts "$ARGUMENTS_OPTS" opt; do
-	     case $opt in
-	        r  ) RELEASE_VERSION=$OPTARG;;
-	        d  ) DEV_VERSION=$OPTARG;;
-	        p  ) PROPERTY=$OPTARG;;
-			s  ) SCM=$OPTARG;;
-			b  ) BRANCH=$OPTARG;;
-	        n  ) PREPARING_DISTRO=$OPTARG;;
-	        h  ) help; exit;;
-	        \? ) echo "Unknown option: -$OPTARG" >&2; help; exit 1;;
-	        :  ) echo "Missing option argument for -$OPTARG" >&2; help; exit 1;;
-	        *  ) echo "Unimplemented option: -$OPTARG" >&2; help; exit 1;;
-	     esac
-	done
-}
-
 
 test_environment(){
 
@@ -57,8 +38,23 @@ test_environment(){
 	fi
 }
 
+ARGUMENTS_OPTS="r:d:p:d:h"
 
-read_arguments
+while getopts "$ARGUMENTS_OPTS" opt; do
+     case $opt in
+        r  ) RELEASE_VERSION=$OPTARG;;
+        d  ) DEV_VERSION=$OPTARG;;
+        p  ) PROPERTY=$OPTARG;;
+		s  ) SCM=$OPTARG;;
+		b  ) BRANCH=$OPTARG;;
+        n  ) PREPARING_DISTRO=$OPTARG;;
+        h  ) help; exit;;
+        \? ) echo "Unknown option: -$OPTARG" >&2; help; exit 1;;
+        :  ) echo "Missing option argument for -$OPTARG" >&2; help; exit 1;;
+        *  ) echo "Unimplemented option: -$OPTARG" >&2; help; exit 1;;
+     esac
+done
+	
 test_environment
 
 # If preparing a refapp distro release, commit the released version. Otherwise, next snapshot

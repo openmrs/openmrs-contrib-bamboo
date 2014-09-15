@@ -16,21 +16,6 @@ help(){
     echo -e "\t-d development-version: next SNAPSHOT version"
 }
 
-read_arguments(){
-	ARGUMENTS_OPTS="r:d:h"
-
-	while getopts "$ARGUMENTS_OPTS" opt; do
-	     case $opt in
-	        r  ) RELEASE_VERSION=$OPTARG;;
-	        d  ) DEV_VERSION=$OPTARG;;
-	        h  ) help; exit;;
-	        \? ) echo "Unknown option: -$OPTARG" >&2; help; exit 1;;
-	        :  ) echo "Missing option argument for -$OPTARG" >&2; help; exit 1;;
-	        *  ) echo "Unimplemented option: -$OPTARG" >&2; help; exit 1;;
-	     esac
-	done
-}
-
 test_environment(){
 	if git tag | egrep -q "\-${RELEASE_VERSION}$"; then
 	    echo "[ERROR] Tag ${RELEASE_VERSION} already exists in the repo. Delete it before we can continue with the process."
@@ -51,7 +36,19 @@ test_environment(){
 }
 
 
-read_arguments
+ARGUMENTS_OPTS="r:d:h"
+
+while getopts "$ARGUMENTS_OPTS" opt; do
+     case $opt in
+        r  ) RELEASE_VERSION=$OPTARG;;
+        d  ) DEV_VERSION=$OPTARG;;
+        h  ) help; exit;;
+        \? ) echo "Unknown option: -$OPTARG" >&2; help; exit 1;;
+        :  ) echo "Missing option argument for -$OPTARG" >&2; help; exit 1;;
+        *  ) echo "Unimplemented option: -$OPTARG" >&2; help; exit 1;;
+     esac
+done
+
 test_environment
  
 ARGS="-DreleaseVersion=$RELEASE_VERSION"
