@@ -12,6 +12,7 @@ SCM=""
 BRANCH=""
 
 CLONE_FOLDER="target/distribution"
+CURRENT_DIR=$(pwd)
 
 help(){
     echo -e "\n[HELP]"
@@ -79,7 +80,10 @@ git commit -m "[Maven Release] Increasing version of $PROPERTY to $UPDATE_RELEAS
 
 # When commiting a SNAPSHOT to the distro, make sure it's already deployed
 if [[ "$PREPARING_DISTRO" != "true" ]]; then
-	$MAVEN_HOME/bin/mvn deploy -DskipTests
+	(   
+		cd $CURRENT_DIR
+	    $MAVEN_HOME/bin/mvn deploy -DskipTests -B 
+	)
 fi
 
 git push
