@@ -43,7 +43,7 @@ ARGUMENTS_OPTS="r:d:p:s:b:n:h"
 while getopts "$ARGUMENTS_OPTS" opt; do
      case $opt in
         r  ) RELEASE_VERSION=$OPTARG;;
-        d  ) DEV_VERSION=$OPTARG;;
+        d  ) NEXT_DEV_VERSION=$OPTARG;;
         p  ) PROPERTY=$OPTARG;;
 		s  ) SCM=$OPTARG;;
 		b  ) BRANCH=$OPTARG;;
