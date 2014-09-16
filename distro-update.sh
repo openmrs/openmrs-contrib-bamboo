@@ -38,7 +38,7 @@ test_environment(){
 	fi
 }
 
-ARGUMENTS_OPTS="r:d:p:d:h"
+ARGUMENTS_OPTS="r:d:p:s:b:n:h"
 
 while getopts "$ARGUMENTS_OPTS" opt; do
      case $opt in
