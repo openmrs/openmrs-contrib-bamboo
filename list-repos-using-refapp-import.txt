@@ -1,0 +1,2 @@
+git@github.com:openmrs/openmrs-module-releasetest.git
+git@github.com:openmrs/openmrs-module-allergyui.git
