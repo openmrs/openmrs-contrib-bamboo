@@ -19,7 +19,7 @@ help(){
     echo "Usage: `basename $0` -r release-version -d development-version -p pom-property -s scm -b branch -n update-next-snapshot (true/false) [-h]"
     echo -e "\t-h: print this help message"
     echo -e "\t-r release-version: version to be released"
-
+}
 
 
 test_environment(){
@@ -78,7 +78,7 @@ git commit -m "[Maven Release] Increasing version of $PROPERTY to $UPDATE_RELEAS
 
 
 # When commiting a SNAPSHOT to the distro, make sure it's already deployed
-if [[ "$PREPARING_DISTRO" != "true"]]; then
+if [[ "$PREPARING_DISTRO" != "true" ]]; then
 	$MAVEN_HOME/bin/mvn deploy -DskipTests
 fi
 
