@@ -50,8 +50,9 @@ while getopts "$ARGUMENTS_OPTS" opt; do
 done
 
 test_environment
- 
-ARGS="-DreleaseVersion=$RELEASE_VERSION"
+
+mkdir -p ./target/tmp_repository 
+ARGS="-Dmaven.repo.local=./target/tmp_repository -DreleaseVersion=$RELEASE_VERSION"
  
 if [ "$DEV_VERSION" != "" ]; then
   ARGS+=" -DdevelopmentVersion=$DEV_VERSION"
