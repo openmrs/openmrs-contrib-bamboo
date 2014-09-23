@@ -1,2 +1,8 @@
 git@github.com:openmrs/openmrs-module-releasetest.git
 git@github.com:openmrs/openmrs-module-allergyui.git
+
+In progress:
+
+git@github.com:openmrs/openmrs-module-uicommons.git
+git@github.com:openmrs/openmrs-module-appui.git
+git@github.com:openmrs/openmrs-module-emrapi.git
