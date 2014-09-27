@@ -4,3 +4,4 @@ git@github.com:openmrs/openmrs-module-uicommons.git
 git@github.com:openmrs/openmrs-module-appui.git
 git@github.com:openmrs/openmrs-module-emrapi.git
 git@github.com:openmrs/openmrs-module-formentryapp.git
+git@github.com:openmrs/openmrs-module-coreapps.git
