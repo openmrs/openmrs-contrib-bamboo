@@ -13,7 +13,7 @@ CURRENT_DIR=$(pwd)
 
 help(){
     echo -e "\n[HELP]"
-    echo "Script to update version in refapp distro"
+    echo "Script to update version of the refapp distro pom in several modules. It receives a file with a SCM url per line. "
     echo "Usage: `basename $0` -v next-version -p pom-property -f scm-lists-file [-h]"
 }
 
