@@ -51,11 +51,14 @@ done
 
 test_environment
 
-mkdir -p ./target/tmp_repository 
-ARGS="-Dmaven.repo.local=./target/tmp_repository -DreleaseVersion=$RELEASE_VERSION"
+rm -rf /tmp/release_maven_repository
+mkdir -p /tmp/release_maven_repository
+ARGS="-Dmaven.repo.local=/tmp/release_maven_repository -DreleaseVersion=$RELEASE_VERSION"
  
 if [ "$DEV_VERSION" != "" ]; then
   ARGS+=" -DdevelopmentVersion=$DEV_VERSION"
 fi
  
 $MAVEN_HOME/bin/mvn release:prepare release:perform ${ARGS} -B
+
+rm -rf /tmp/release_maven_repository
