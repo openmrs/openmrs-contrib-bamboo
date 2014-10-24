@@ -50,15 +50,11 @@ while getopts "$ARGUMENTS_OPTS" opt; do
 done
 
 test_environment
-
-rm -rf /tmp/release_maven_repository
-mkdir -p /tmp/release_maven_repository
-ARGS="-Dmaven.repo.local=/tmp/release_maven_repository -DreleaseVersion=$RELEASE_VERSION"
+TEMP_FOLDER=$(mktemp -d -t release.XXXXXXX)
+ARGS="-Dmaven.repo.local=$TEMP_FOLDER -DreleaseVersion=$RELEASE_VERSION"
  
 if [ "$DEV_VERSION" != "" ]; then
   ARGS+=" -DdevelopmentVersion=$DEV_VERSION"
 fi
  
 $MAVEN_HOME/bin/mvn release:prepare release:perform ${ARGS} -B
-
-rm -rf /tmp/release_maven_repository
