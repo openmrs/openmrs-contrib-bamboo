@@ -2,7 +2,7 @@
 # Script to checkout the distro and update version a certain module. 
 # It can save the released version or next snapshot. 
 
-set -e
+set -e -v
 
 PROPERTY=""
 NEXT_DEV_VERSION=""
@@ -81,6 +81,7 @@ fi
 sed -i'' -r "s|<$PROPERTY>[^<]+</$PROPERTY>|<$PROPERTY>$UPDATE_RELEASE</$PROPERTY>|" pom.xml
 
 git diff-index --quiet HEAD --; echo "Changed: $?"
+
 if git diff-index --quiet HEAD --; then
 	echo "[WARN] Property $PROPERTY was already set to $UPDATE_RELEASE. Skipping commit."
 	exit 0
