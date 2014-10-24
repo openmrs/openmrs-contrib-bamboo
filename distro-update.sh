@@ -73,10 +73,20 @@ cd $CLONE_FOLDER
 git config push.default current
 git checkout $BRANCH
 
+if ! egrep -q "<$PROPERTY>[^<]+</$PROPERTY>" pom.xml; then
+	echo "[ERROR] Property $PROPERTY does not exist in the distro pom $SCM. It cannot be updated"
+	exit 1
+fi
+
 sed -i'' -r "s|<$PROPERTY>[^<]+</$PROPERTY>|<$PROPERTY>$UPDATE_RELEASE</$PROPERTY>|" pom.xml
+
+if git diff-index --quiet HEAD --; then
+	echo "[WARN] Property $PROPERTY was already set to $UPDATE_RELEASE. Skipping commit."
+	exit 0
+fi
+
 git add pom.xml
 git commit -m "[Maven Release] Increasing version of $PROPERTY to $UPDATE_RELEASE"
-
 
 # When commiting a SNAPSHOT to the distro, make sure it's already deployed
 if [[ "$PREPARING_DISTRO" != "true" ]]; then
