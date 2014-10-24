@@ -80,7 +80,7 @@ fi
 
 sed -i'' -r "s|<$PROPERTY>[^<]+</$PROPERTY>|<$PROPERTY>$UPDATE_RELEASE</$PROPERTY>|" pom.xml
 
-git diff-index --quiet HEAD --; echo "Changed: $?"
+git diff-index HEAD --; echo "Changed: $?"
 git diff HEAD
 
 git status
