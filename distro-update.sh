@@ -2,7 +2,7 @@
 # Script to checkout the distro and update version a certain module. 
 # It can save the released version or next snapshot. 
 
-set -v
+set -e
 
 PROPERTY=""
 NEXT_DEV_VERSION=""
@@ -80,12 +80,8 @@ fi
 
 sed -i'' -r "s|<$PROPERTY>[^<]+</$PROPERTY>|<$PROPERTY>$UPDATE_RELEASE</$PROPERTY>|" pom.xml
 
-git diff-index HEAD --; echo "Changed: $?"
-git diff HEAD
-
-git status
-
-if git diff-index --quiet HEAD --; then
+# git diff-tree is always returning 1 in the Bamboo agents :/ Using git diff instead
+if [[ -z $(git diff) ]]; then
 	echo "[WARN] Property $PROPERTY was already set to $UPDATE_RELEASE. Skipping commit."
 	exit 0
 fi
