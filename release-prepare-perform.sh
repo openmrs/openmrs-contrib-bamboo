@@ -2,7 +2,7 @@
 
 ## Executes a maven release prepare perform 
 
-set -e
+set -e -v
 
 RELEASE_VERSION=""
 DEV_VERSION=""
@@ -57,4 +57,4 @@ if [ "$DEV_VERSION" != "" ]; then
   ARGS+=" -DdevelopmentVersion=$DEV_VERSION"
 fi
  
-$MAVEN_HOME/bin/mvn release:prepare release:perform ${ARGS} -B
+$MAVEN_HOME/bin/mvn org.apache.maven.plugins:maven-release-plugin:2.5.1:prepare org.apache.maven.plugins:maven-release-plugin:2.5.1:perform ${ARGS} -B
