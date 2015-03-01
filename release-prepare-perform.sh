@@ -53,7 +53,7 @@ while getopts "$ARGUMENTS_OPTS" opt; do
      esac
 done
 
-git remote set-url ${REMOTE_REPOSITORY}
+git remote set-url origin ${REMOTE_REPOSITORY}
 
 test_environment
 TEMP_FOLDER=$(mktemp -d -t release.XXXXXXX)
