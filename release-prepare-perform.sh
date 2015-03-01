@@ -72,7 +72,7 @@ $MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:prepare ${ARGS} -B || EXIT_CODE=$?
 if [[ "$EXIT_CODE" != "0" ]]; then
     echoerr "[ERROR] mvn release:prepare failed. Attempting to do a release rollback. "
     $MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:rollback ${ARGS} -B || :
-    echoerr "[ERROR] mvn release:prepare failed, scroll up the logs to see the error. release:rollback was attempted. Delete any existent tag in the repo, fix the problem and try again. "
+    echoerr "[ERROR] mvn release:prepare failed, scroll up the logs to see the error. release:rollback was attempted. Delete the tag from the repository (if it exists), check if the SCM tag is a ssh and not http and try again. "
     exit $EXIT_CODE
 fi
 
