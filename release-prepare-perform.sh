@@ -2,7 +2,7 @@
 
 ## Executes a maven release prepare perform 
 
-set -e -v
+set -e
 
 RELEASE_VERSION=""
 DEV_VERSION=""
