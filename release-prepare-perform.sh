@@ -6,6 +6,7 @@ set -e -v
 
 RELEASE_VERSION=""
 DEV_VERSION=""
+REMOTE_REPOSITORY=${bamboo_planRepository_repositoryUrl}
 
 help(){
     echo -e "\n[HELP]"
@@ -14,10 +15,12 @@ help(){
     echo -e "\t-h: print this help message"
     echo -e "\t-r release-version: version to be released"
     echo -e "\t-d development-version: next SNAPSHOT version"
+    echo -e "\t-r remote repository: repository to check if the tags already exist. Default to Bamboo variable bamboo_planRepository_repositoryUrl"
 }
 
 test_environment(){
-	if git tag | egrep -q "\-${RELEASE_VERSION}$"; then
+    # verify if the tag exists upstream v1.0.0 or *-1.0.0
+	if git ls-remote --tags origin | egrep -q "[-v]${RELEASE_VERSION}$"; then
 	    echo "[ERROR] Tag ${RELEASE_VERSION} already exists in the repo. Delete it before we can continue with the process."
 	    exit 1
 	fi 
@@ -36,18 +39,21 @@ test_environment(){
 }
 
 
-ARGUMENTS_OPTS="r:d:h"
+ARGUMENTS_OPTS="r:d:hr:"
 
 while getopts "$ARGUMENTS_OPTS" opt; do
      case $opt in
         r  ) RELEASE_VERSION=$OPTARG;;
         d  ) DEV_VERSION=$OPTARG;;
+        r  ) REMOTE_REPOSITORY=$OPTARG;;
         h  ) help; exit;;
         \? ) echo "Unknown option: -$OPTARG" >&2; help; exit 1;;
         :  ) echo "Missing option argument for -$OPTARG" >&2; help; exit 1;;
         *  ) echo "Unimplemented option: -$OPTARG" >&2; help; exit 1;;
      esac
 done
+
+git remote set-url ${REMOTE_REPOSITORY}
 
 test_environment
 TEMP_FOLDER=$(mktemp -d -t release.XXXXXXX)
