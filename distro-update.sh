@@ -14,6 +14,8 @@ BRANCH=""
 CLONE_FOLDER="target/distribution"
 CURRENT_DIR=$(pwd)
 
+echoerr() { echo "$@" 1>&2; }
+
 help(){
     echo -e "\n[HELP]"
     echo "Script to update version in refapp distro"
@@ -26,15 +28,15 @@ help(){
 test_environment(){
 
 	if [[ "$RELEASE_VERSION" == "" || "$PROPERTY" == "" || "$NEXT_DEV_VERSION" = "" || "$PREPARING_DISTRO" == "" || "$SCM" == "" || "$BRANCH" == "" ]]; then 
-		echo "RELEASE_VERSION = $RELEASE_VERSION \tPROPERTY = $PROPERTY \tNEXT_DEV_VERSION = $NEXT_DEV_VERSION \t \
+		echoerr "RELEASE_VERSION = $RELEASE_VERSION \tPROPERTY = $PROPERTY \tNEXT_DEV_VERSION = $NEXT_DEV_VERSION \t \
 		PREPARING_DISTRO = $PREPARING_DISTRO\t SCM=$SCM\t BRANCH=$BRANCH"
-	    echo "[ERROR] At least one command line argument is missing. See the list above for reference. " 
+	    echoerr "[ERROR] At least one command line argument is missing. See the list above for reference. " 
 	    help 
 	    exit 1
 	fi 
 
 	if [[ "$$MAVEN_HOME" == "" ]]; then
-	    echo "[ERROR] MAVEN_HOME variable is unset. Make sure to set it using 'export MAVEN_HOME=/path/to/your/maven3/directory/'"
+	    echoerr "[ERROR] MAVEN_HOME variable is unset. Make sure to set it using 'export MAVEN_HOME=/path/to/your/maven3/directory/'"
 	    exit 1
 	fi
 }
@@ -50,9 +52,9 @@ while getopts "$ARGUMENTS_OPTS" opt; do
 		b  ) BRANCH=$OPTARG;;
         n  ) PREPARING_DISTRO=$OPTARG;;
         h  ) help; exit;;
-        \? ) echo "Unknown option: -$OPTARG" >&2; help; exit 1;;
-        :  ) echo "Missing option argument for -$OPTARG" >&2; help; exit 1;;
-        *  ) echo "Unimplemented option: -$OPTARG" >&2; help; exit 1;;
+        \? ) echoerr "Unknown option: -$OPTARG"; help; exit 1;;
+        :  ) echoerr "Missing option argument for -$OPTARG"; help; exit 1;;
+        *  ) echoerr "Unimplemented option: -$OPTARG"; help; exit 1;;
      esac
 done
 	
@@ -74,7 +76,7 @@ git config push.default current
 git checkout $BRANCH
 
 if ! egrep -q "<$PROPERTY>[^<]+</$PROPERTY>" pom.xml; then
-	echo "[ERROR] Property $PROPERTY does not exist in the distro pom $SCM. It cannot be updated"
+	echoerr "[ERROR] Property $PROPERTY does not exist in the distro pom $SCM. It cannot be updated"
 	exit 1
 fi
 
@@ -82,7 +84,7 @@ sed -i'' -r "s|<$PROPERTY>[^<]+</$PROPERTY>|<$PROPERTY>$UPDATE_RELEASE</$PROPERT
 
 # git diff-tree is always returning 1 in the Bamboo agents :/ Using git diff instead
 if [[ -z $(git diff) ]]; then
-	echo "[WARN] Property $PROPERTY was already set to $UPDATE_RELEASE. Skipping commit."
+	echoerr "[WARN] Property $PROPERTY was already set to $UPDATE_RELEASE. Skipping commit."
 	exit 0
 fi
 
