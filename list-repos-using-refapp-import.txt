@@ -8,3 +8,4 @@ git@github.com:openmrs/openmrs-module-coreapps.git
 git@github.com:openmrs/openmrs-module-referencemetadata.git
 git@github.com:openmrs/openmrs-module-referenceapplication.git
 git@github.com:openmrs/openmrs-module-referencedemodata.git
+git@github.com:openmrs/openmrs-module-appointmentscheduling.git
