@@ -11,5 +11,3 @@ git@github.com:openmrs/openmrs-module-referenceapplication.git
 git@github.com:openmrs/openmrs-module-referencedemodata.git
 git@github.com:openmrs/openmrs-module-appointmentscheduling.git
 git@github.com:openmrs/openmrs-module-appointmentschedulingui.git
-git@github.com:openmrs/openmrs-module-providermanagement.git
-git@github.com:openmrs/openmrs-module-adminui.git
