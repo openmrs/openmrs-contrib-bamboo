@@ -3,7 +3,7 @@
 
 tx pull -f --mode=reviewed
 
-if [[ -z $(git diff) ]]; then
+if [[ -z $(git diff-index --quiet HEAD --) ]]; then
 	git commit -am "committing translations from transifex"
 	git push
 fi
