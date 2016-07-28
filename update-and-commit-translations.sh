@@ -3,6 +3,8 @@
 
 tx pull -f --mode=reviewed
 
+git update-index -q --refresh
+
 if ! git diff-index --quiet HEAD --; then 
   echo 'There are changes to be committed'
   git commit -am "committing translations from transifex"
