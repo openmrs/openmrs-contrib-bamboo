@@ -91,13 +91,4 @@ fi
 git add pom.xml
 git commit -m "[Maven Release] Increasing version of $PROPERTY to $UPDATE_RELEASE"
 
-# When commiting a SNAPSHOT to the distro, make sure it's already deployed
-if [[ "$PREPARING_DISTRO" != "true" ]]; then
-	(   
-		cd $CURRENT_DIR
-	    $MAVEN_HOME/bin/mvn deploy -DskipTests -B 
-	)
-fi
-
 git push
-

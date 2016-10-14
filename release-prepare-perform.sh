@@ -82,3 +82,6 @@ if [[ "$EXIT_CODE" != "0" ]]; then
     echoerr "[ERROR] mvn release:perform failed. Fix the problem and try another release number. "
     exit $EXIT_CODE
 fi
+
+echo "Uploading next snapshots"
+$MAVEN_HOME/bin/mvn deploy -DskipTests -B
