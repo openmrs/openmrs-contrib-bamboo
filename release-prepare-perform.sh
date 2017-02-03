@@ -64,6 +64,7 @@ TEMP_FOLDER=$(mktemp -d -t release.XXXXXXX)
 ARGS="-Dmaven.repo.local=$TEMP_FOLDER -DreleaseVersion=$RELEASE_VERSION"
  
 if [ "$DEV_VERSION" != "" ]; then
+  DEV_VERSION=${DEV_VERSION%-SNAPSHOT}-SNAPSHOT  # always add a snapshot if not there
   ARGS+=" -DdevelopmentVersion=$DEV_VERSION"
 fi
 
