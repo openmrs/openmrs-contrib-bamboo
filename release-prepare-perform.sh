@@ -68,6 +68,7 @@ if [ "$DEV_VERSION" != "" ]; then
 fi
 
 EXIT_CODE=0
+echo "Calling mvn ${RELEASE_PLUGIN}:prepare ${ARGS} -B"
 $MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:prepare ${ARGS} -B || EXIT_CODE=$?
 if [[ "$EXIT_CODE" != "0" ]]; then
     echoerr "[ERROR] mvn release:prepare failed. Attempting to do a release rollback. "
@@ -77,6 +78,7 @@ if [[ "$EXIT_CODE" != "0" ]]; then
 fi
 
 EXIT_CODE=0
+echo "Calling mvn ${RELEASE_PLUGIN}:perform ${ARGS} -B"
 $MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:perform ${ARGS} -B || EXIT_CODE=$?
 if [[ "$EXIT_CODE" != "0" ]]; then
     echoerr "[ERROR] mvn release:perform failed. Fix the problem and try another release number. "
