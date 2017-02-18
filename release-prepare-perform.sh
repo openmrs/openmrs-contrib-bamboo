@@ -1,7 +1,5 @@
 #!/bin/bash
 
-exit 1
-
 ## Executes a maven release prepare perform 
 
 set -e
