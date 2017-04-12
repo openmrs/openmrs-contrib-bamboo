@@ -24,24 +24,34 @@ help(){
 
 test_environment(){
 
-	if [[ "$RELEASE_VERSION" == "" || "$REMOTE_REPOSITORY" == "" ]]; then 
+	if [[ "$RELEASE_VERSION" == "" || "$REMOTE_REPOSITORY" == "" ]]; then
 		echoerr "RELEASE_VERSION = $RELEASE_VERSION\t REMOTE_REPOSITORY = $REMOTE_REPOSITORY"
-	    echoerr "[ERROR] At least one command line argument is missing. See the list above for reference. " 
-	    help 
+	    echoerr "[ERROR] At least one command line argument is missing. See the list above for reference. "
+	    help
 	    exit 1
-	fi 
+	fi
 
 	if [[ "$MAVEN_HOME" == "" ]]; then
 	    echoerr "[ERROR] MAVEN_HOME variable is unset. Make sure to set it using 'export MAVEN_HOME=/path/to/your/maven3/directory/'"
 	    exit 1
 	fi
 
-    # verify if the tag exists upstream v1.0.0 or .+-1.0.0
-    git remote set-url origin ${REMOTE_REPOSITORY}  # to make sure ls-remote works on Bamboo
-    if git ls-remote --tags origin | egrep -q "^(.+\-|v)${RELEASE_VERSION}$"; then
-        echoerr "[ERROR] Tag ${RELEASE_VERSION} already exists in the repo. Delete it before we can continue with the process."
-        exit 1
-    fi 
+  if [[ "$RELEASE_VERSION" != "" && ! "$RELEASE_VERSION" =~ ^([0-9]+\.){2}[0-9]+$ ]]; then
+    echoerr "[ERROR] Version $RELEASE_VERSION is not semver, e.g. 4.25.0. Check http://semver.org/ "
+    exit 1
+  fi
+
+  if [[ "$DEV_VERSION" != "" && ! "$DEV_VERSION" =~ ^([0-9]+\.){2}[0-9]+$ ]]; then
+    echoerr "[ERROR] Version $DEV_VERSION is not semver, e.g. 4.25.0. Check http://semver.org/ "
+    exit 1
+  fi
+
+  # verify if the tag exists upstream v1.0.0 or .+-1.0.0
+  git remote set-url origin ${REMOTE_REPOSITORY}  # to make sure ls-remote works on Bamboo
+  if git ls-remote --tags origin | egrep -q "^(.+\-|v)${RELEASE_VERSION}$"; then
+      echoerr "[ERROR] Tag ${RELEASE_VERSION} already exists in the repo. Delete it before we can continue with the process."
+      exit 1
+  fi
 }
 
 
@@ -62,9 +72,15 @@ done
 test_environment
 TEMP_FOLDER=$(mktemp -d -t release.XXXXXXX)
 ARGS="-Dmaven.repo.local=$TEMP_FOLDER -DreleaseVersion=$RELEASE_VERSION"
- 
+
 if [ "$DEV_VERSION" != "" ]; then
   DEV_VERSION=${DEV_VERSION%-SNAPSHOT}-SNAPSHOT  # always add a snapshot if not there
+  ARGS+=" -DdevelopmentVersion=$DEV_VERSION"
+elif [[ "$RELEASE_VERSION" =~ .*\.0$ ]]; then
+  # force version 2.19.0-SNAPSHOT if releasing 2.18.0
+  # https://talk.openmrs.org/t/releasing-modules-using-semantic-versioning/7797/15
+  VERSION_SPLIT=(${RELEASE_VERSION//./ })
+  DEV_VERSION="${VERSION_SPLIT[0]}.$((${VERSION_SPLIT[1]}+1)).0-SNAPSHOT"
   ARGS+=" -DdevelopmentVersion=$DEV_VERSION"
 fi
 
