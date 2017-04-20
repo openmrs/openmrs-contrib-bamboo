@@ -41,7 +41,7 @@ test_environment(){
     exit 1
   fi
 
-  if [[ "$DEV_VERSION" != "" && ! "$DEV_VERSION" =~ ^([0-9]+\.){2}[0-9]+$ ]]; then
+  if [[ "$DEV_VERSION" != "" && ! "$DEV_VERSION" =~ ^([0-9]+\.){2}[0-9]+(-SNAPSHOT)?$ ]]; then
     echoerr "[ERROR] Version $DEV_VERSION is not semver, e.g. 4.25.0. Check http://semver.org/ "
     exit 1
   fi
