@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eux
 # Script to pull transifex translation files, and commit them to git if there are any changes.
 
 tx pull -f --mode=reviewed
