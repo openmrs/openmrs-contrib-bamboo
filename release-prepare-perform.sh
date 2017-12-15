@@ -103,4 +103,4 @@ if [[ "$EXIT_CODE" != "0" ]]; then
 fi
 
 echo "Uploading next snapshots"
-$MAVEN_HOME/bin/mvn clean deploy -DskipTests -B
+$MAVEN_HOME/bin/mvn deploy -DskipTests -B
