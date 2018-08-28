@@ -63,8 +63,8 @@ while getopts "$ARGUMENTS_OPTS" opt; do
      case $opt in
         r  ) RELEASE_VERSION=$OPTARG;;
         d  ) DEV_VERSION=$OPTARG;;
-        e  ) REMOTE_REPOSITORY=$OPTARG;;\
-        s  ) EXTRA_RELEASE_ARGS="-DskipTests"
+        e  ) REMOTE_REPOSITORY=$OPTARG;;
+        s  ) EXTRA_RELEASE_ARGS="-DskipTests";;
         h  ) help; exit;;
         \? ) echoerr "Unknown option: -$OPTARG"; help; exit 1;;
         :  ) echoerr "Missing option argument for -$OPTARG"; help; exit 1;;
