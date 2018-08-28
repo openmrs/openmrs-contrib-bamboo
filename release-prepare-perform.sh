@@ -74,7 +74,7 @@ done
 
 test_environment
 TEMP_FOLDER=$(mktemp -d -t release.XXXXXXX)
-ARGS="-Dmaven.repo.local=$TEMP_FOLDER -DreleaseVersion=$RELEASE_VERSION -Darguments=\"-DdeployAtEnd${EXTRA_RELEASE_ARGS}\""
+ARGS="-Dmaven.repo.local=$TEMP_FOLDER -DreleaseVersion=$RELEASE_VERSION -Darguments='-DdeployAtEnd=true${EXTRA_RELEASE_ARGS}'"
 
 if [ "$DEV_VERSION" != "" ]; then
   DEV_VERSION=${DEV_VERSION%-SNAPSHOT}-SNAPSHOT  # always add a snapshot if not there
