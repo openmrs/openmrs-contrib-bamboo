@@ -16,10 +16,11 @@ echoerr() { echo "$@" 1>&2; }
 help(){
     echo -e "\n[HELP]"
     echo "Script to execute maven releases"
-    echo "Usage: `basename $0` -r release-version [-d development-version] [-e remote-repo] [-h]"
+    echo "Usage: `basename $0` -r release-version [-d development-version] [-e remote-repo] [-s] [-h]"
     echo -e "\t-h: print this help message"
     echo -e "\t-r release-version: version to be released"
     echo -e "\t-d development-version: next SNAPSHOT version"
+    echo -e "\t-s: skip tests during release (-DskipTests)"
     echo -e "\t-e remote repository: repository to check if the tags already exist. Default to Bamboo variable bamboo_planRepository_repositoryUrl"
 }
 
@@ -55,14 +56,15 @@ test_environment(){
   fi
 }
 
+EXTRA_RELEASE_ARGS=""
 
-ARGUMENTS_OPTS="r:d:hr:"
-
+ARGUMENTS_OPTS="r:d:e:hs"
 while getopts "$ARGUMENTS_OPTS" opt; do
      case $opt in
         r  ) RELEASE_VERSION=$OPTARG;;
         d  ) DEV_VERSION=$OPTARG;;
-        e  ) REMOTE_REPOSITORY=$OPTARG;;
+        e  ) REMOTE_REPOSITORY=$OPTARG;;\
+        s  ) EXTRA_RELEASE_ARGS="-DskipTests"
         h  ) help; exit;;
         \? ) echoerr "Unknown option: -$OPTARG"; help; exit 1;;
         :  ) echoerr "Missing option argument for -$OPTARG"; help; exit 1;;
@@ -72,7 +74,7 @@ done
 
 test_environment
 TEMP_FOLDER=$(mktemp -d -t release.XXXXXXX)
-ARGS="-Dmaven.repo.local=$TEMP_FOLDER -DreleaseVersion=$RELEASE_VERSION"
+ARGS="-Dmaven.repo.local=$TEMP_FOLDER -DreleaseVersion=$RELEASE_VERSION -Darguments=\"-DdeployAtEnd $EXTRA_RELEASE_ARGS\""
 
 if [ "$DEV_VERSION" != "" ]; then
   DEV_VERSION=${DEV_VERSION%-SNAPSHOT}-SNAPSHOT  # always add a snapshot if not there
