@@ -64,7 +64,7 @@ while getopts "$ARGUMENTS_OPTS" opt; do
         r  ) RELEASE_VERSION=$OPTARG;;
         d  ) DEV_VERSION=$OPTARG;;
         e  ) REMOTE_REPOSITORY=$OPTARG;;
-        s  ) EXTRA_RELEASE_ARGS="-DskipTests";;
+        s  ) EXTRA_RELEASE_ARGS=" -DskipTests";;
         h  ) help; exit;;
         \? ) echoerr "Unknown option: -$OPTARG"; help; exit 1;;
         :  ) echoerr "Missing option argument for -$OPTARG"; help; exit 1;;
@@ -74,7 +74,7 @@ done
 
 test_environment
 TEMP_FOLDER=$(mktemp -d -t release.XXXXXXX)
-ARGS="-Dmaven.repo.local=$TEMP_FOLDER -DreleaseVersion=$RELEASE_VERSION -Darguments=\"-DdeployAtEnd $EXTRA_RELEASE_ARGS\""
+ARGS="-Dmaven.repo.local=$TEMP_FOLDER -DreleaseVersion=$RELEASE_VERSION -Darguments=\"-DdeployAtEnd${EXTRA_RELEASE_ARGS}\""
 
 if [ "$DEV_VERSION" != "" ]; then
   DEV_VERSION=${DEV_VERSION%-SNAPSHOT}-SNAPSHOT  # always add a snapshot if not there
