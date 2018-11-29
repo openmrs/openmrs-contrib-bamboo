@@ -38,7 +38,7 @@ test_environment(){
 	    exit 1
 	fi
 
-  if [[ "$RELEASE_VERSION" != "" && ! "$RELEASE_VERSION" =~ ^([0-9]+\.){2}[0-9]+(-alpha)?$ ]]; then
+  if [[ "$RELEASE_VERSION" != "" && ! "$RELEASE_VERSION" =~ ^([0-9]+\.){2}[0-9]+$ ]]; then
     echoerr "[ERROR] Version $RELEASE_VERSION is not semver, e.g. 1.7.0. Check http://semver.org/ "
     exit 1
   fi
