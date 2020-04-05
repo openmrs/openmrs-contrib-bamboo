@@ -11,6 +11,18 @@ REMOTE_REPOSITORY="${bamboo_planRepository_repositoryUrl}"
 
 RELEASE_PLUGIN="org.apache.maven.plugins:maven-release-plugin:2.5.1"
 
+# Regex to validate semver
+# Should match any valid semver as defined by SemVer 2.0.0, including pre-release and
+# build information
+#
+# Matches versions like:
+#    0.1.1
+#    1.15.3
+#    2.5.1-rc
+#    3.5.3+b88cde4
+#    26.0.1-rc2+b775a73
+SEMVER_REGEX="^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-((0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)){0,1}(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)){0,1}$"
+
 echoerr() { echo "$@" 1>&2; }
 
 help(){
@@ -38,12 +50,20 @@ test_environment(){
 	    exit 1
 	fi
 
-  if [[ "$RELEASE_VERSION" != "" && ! "$RELEASE_VERSION" =~ ^([0-9]+\.){2}[0-9]+((-alpha)|(-beta))?$ ]]; then
+  if [[ "$RELEASE_VERSION" != "" && ! "$RELEASE_VERSION" =~ $SEMVER_REGEX ]]; then
     echoerr "[ERROR] Version $RELEASE_VERSION is not semver, e.g. 1.7.0. Check http://semver.org/ "
     exit 1
   fi
+  
+  (
+    shopt -s nocasematch
+    if [[ "$RELEASE_VERSION" =~ -SNAPSHOT$ ]]; then
+      echoerr "[ERROR] Version $RELEASE_VERSION is reserved as a development version. Please use another valid semver for release "
+      exit 1
+    fi
+  )
 
-  if [[ "$DEV_VERSION" != "" && ! "$DEV_VERSION" =~ ^([0-9]+\.){2}[0-9]+(-SNAPSHOT)?$ ]]; then
+  if [[ "$DEV_VERSION" != "" && ! "$DEV_VERSION" =~ $SEMVER_REGEX ]]; then
     echoerr "[ERROR] Version $DEV_VERSION is not semver, e.g. 4.25.0. Check http://semver.org/ "
     exit 1
   fi
