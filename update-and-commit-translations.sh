@@ -5,7 +5,7 @@ set -e
 set -u
 set -x
 
-tx pull -f --mode=reviewed
+tx pull -f -a --minimum-perc=1 --traceback
 
 git update-index -q --refresh
 
