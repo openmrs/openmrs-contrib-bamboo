@@ -11,7 +11,8 @@ git update-index -q --refresh
 
 # If running inside a Bamboo agent, set git origin
 if [ -n "${bamboo_shortJobName}" ]; then
-  remote_url="git@github.com:openmrs/openmrs-module-${bamboo_shortJobName}.git"
+  resolved_repo_name=${REPO_NAME:-openmrs/openmrs-module-$bamboo_shortJobName}
+  remote_url="git@github.com:${resolved_repo_name}.git"
   echo "Setting git remote to ${remote_url}"
   git remote set-url origin $remote_url
 fi
