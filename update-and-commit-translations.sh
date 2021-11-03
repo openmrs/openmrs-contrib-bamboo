@@ -5,7 +5,7 @@ set -e
 set -u
 set -x
 
-tx --traceback pull -f -a --minimum-perc=1
+tx --traceback pull -f
 
 git update-index -q --refresh
 
