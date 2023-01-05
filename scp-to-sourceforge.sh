@@ -12,4 +12,4 @@ mkdir -p ${syncDir}/${targetDir}
 cp ${sourceDir}/${sourceFile} ${syncDir}/${targetDir}/${targetFile}
 
 # Rsync to sourceforge
-rsync -avOP -e "ssh -o StrictHostKeyChecking=no -i $HOME/.ssh/sourceforge/id_ed25519" ${syncDir}/ openmrs@frs.sourceforge.net:/home/frs/project/o/op/openmrs/
+rsync -avOP --no-perms -e "ssh -o StrictHostKeyChecking=no -i $HOME/.ssh/sourceforge/id_ed25519" ${syncDir}/ openmrs@frs.sourceforge.net:/home/frs/project/o/op/openmrs/
