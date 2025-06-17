@@ -34,6 +34,7 @@ help(){
     echo -e "\t-d development-version: next SNAPSHOT version"
     echo -e "\t-s: skip tests during release (-DskipTests)"
     echo -e "\t-e remote repository: repository to check if the tags already exist. Default to Bamboo variable bamboo_planRepository_repositoryUrl"
+    echo -e "\t-p: maven profile to activate during the build (e.g., -PdockerProfile)"
 }
 
 test_environment(){
@@ -78,13 +79,14 @@ test_environment(){
 
 EXTRA_RELEASE_ARGS=""
 
-ARGUMENTS_OPTS="r:d:e:hs"
+ARGUMENTS_OPTS="r:d:e:p:hs"
 while getopts "$ARGUMENTS_OPTS" opt; do
      case $opt in
         r  ) RELEASE_VERSION=$OPTARG;;
         d  ) DEV_VERSION=$OPTARG;;
         e  ) REMOTE_REPOSITORY=$OPTARG;;
-        s  ) EXTRA_RELEASE_ARGS="-DskipTests";;
+        p  ) EXTRA_RELEASE_ARGS="${EXTRA_RELEASE_ARGS} -P$OPTARG" ;;
+        s  ) EXTRA_RELEASE_ARGS="${EXTRA_RELEASE_ARGS} -DskipTests";;
         h  ) help; exit;;
         \? ) echoerr "Unknown option: -$OPTARG"; help; exit 1;;
         :  ) echoerr "Missing option argument for -$OPTARG"; help; exit 1;;
