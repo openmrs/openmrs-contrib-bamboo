@@ -12,6 +12,15 @@ REMOTE_REPOSITORY="${bamboo_planRepository_repositoryUrl}"
 RELEASE_PLUGIN="org.apache.maven.plugins:maven-release-plugin:2.5.1"
 
 # Regex to validate semver
+# Should match any valid semver as defined by SemVer 2.0.0, including pre-release and
+# build information
+#
+# Matches versions like:
+#    0.1.1
+#    1.15.3
+#    2.5.1-rc
+#    3.5.3+b88cde4
+#    26.0.1-rc2+b775a73
 SEMVER_REGEX="^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*)){0,1}(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)){0,1}$"
 
 echoerr() { echo "$@" 1>&2; }
