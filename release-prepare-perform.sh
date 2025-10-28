@@ -12,15 +12,6 @@ REMOTE_REPOSITORY="${bamboo_planRepository_repositoryUrl}"
 RELEASE_PLUGIN="org.apache.maven.plugins:maven-release-plugin:2.5.1"
 
 # Regex to validate semver
-# Should match any valid semver as defined by SemVer 2.0.0, including pre-release and
-# build information
-#
-# Matches versions like:
-#    0.1.1
-#    1.15.3
-#    2.5.1-rc
-#    3.5.3+b88cde4
-#    26.0.1-rc2+b775a73
 SEMVER_REGEX="^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*)){0,1}(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)){0,1}$"
 
 echoerr() { echo "$@" 1>&2; }
@@ -110,22 +101,22 @@ elif [[ "$RELEASE_VERSION" =~ .*\.0$ ]]; then
 fi
 
 EXIT_CODE=0
-echo "Calling mvn ${RELEASE_PLUGIN}:prepare ${ARGS} -B"
-$MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:prepare ${ARGS} -B || EXIT_CODE=$?
+echo "Calling mvn ${RELEASE_PLUGIN}:prepare ${ARGS} ${MAVEN_ARGS} -B"
+$MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:prepare ${ARGS} ${MAVEN_ARGS} -B || EXIT_CODE=$?
 if [[ "$EXIT_CODE" != "0" ]]; then
     echoerr "[ERROR] mvn release:prepare failed. Attempting to do a release rollback. "
-    $MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:rollback ${ARGS} -B || :
+    $MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:rollback ${ARGS} ${MAVEN_ARGS} -B || :
     echoerr "[ERROR] mvn release:prepare failed, scroll up the logs to see the error. release:rollback was attempted. Delete the tag from the repository (if it exists), check if the SCM tag is a ssh and not http and try again. "
     exit $EXIT_CODE
 fi
 
 EXIT_CODE=0
-echo "Calling mvn ${RELEASE_PLUGIN}:perform ${ARGS} -B"
-$MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:perform ${ARGS} -B || EXIT_CODE=$?
+echo "Calling mvn ${RELEASE_PLUGIN}:perform ${ARGS} ${MAVEN_ARGS} -B"
+$MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:perform ${ARGS} ${MAVEN_ARGS} -B || EXIT_CODE=$?
 if [[ "$EXIT_CODE" != "0" ]]; then
     echoerr "[ERROR] mvn release:perform failed. Fix the problem and try another release number. "
     exit $EXIT_CODE
 fi
 
 echo "Uploading next snapshots"
-$MAVEN_HOME/bin/mvn deploy -DskipTests -B
+$MAVEN_HOME/bin/mvn deploy -DskipTests ${MAVEN_ARGS} -B
