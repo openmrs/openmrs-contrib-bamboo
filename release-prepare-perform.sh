@@ -86,7 +86,7 @@ while getopts "$ARGUMENTS_OPTS" opt; do
         d  ) DEV_VERSION=$OPTARG;;
         e  ) REMOTE_REPOSITORY=$OPTARG;;
         p  ) EXTRA_RELEASE_ARGS="${EXTRA_RELEASE_ARGS} -P$OPTARG" ;;
-        s  ) EXTRA_RELEASE_ARGS="${EXTRA_RELEASE_ARGS} -DskipTests";;
+        s  ) EXTRA_RELEASE_ARGS="${EXTRA_RELEASE_ARGS} -DskipTests -Dmaven.test.skip=true";;
         h  ) help; exit;;
         \? ) echoerr "Unknown option: -$OPTARG"; help; exit 1;;
         :  ) echoerr "Missing option argument for -$OPTARG"; help; exit 1;;
