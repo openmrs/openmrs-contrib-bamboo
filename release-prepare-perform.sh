@@ -9,7 +9,7 @@ RELEASE_VERSION=""
 DEV_VERSION=""
 REMOTE_REPOSITORY="${bamboo_planRepository_repositoryUrl}"
 
-RELEASE_PLUGIN="org.apache.maven.plugins:maven-release-plugin:2.5.1"
+RELEASE_PLUGIN="org.apache.maven.plugins:maven-release-plugin:3.1.1"
 
 # Regex to validate semver
 # Should match any valid semver as defined by SemVer 2.0.0, including pre-release and
