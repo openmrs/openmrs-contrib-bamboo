@@ -85,8 +85,8 @@ while getopts "$ARGUMENTS_OPTS" opt; do
         r  ) RELEASE_VERSION=$OPTARG;;
         d  ) DEV_VERSION=$OPTARG;;
         e  ) REMOTE_REPOSITORY=$OPTARG;;
-        p  ) EXTRA_RELEASE_ARGS="${EXTRA_RELEASE_ARGS} -P$OPTARG" ;;
-        s  ) EXTRA_RELEASE_ARGS="${EXTRA_RELEASE_ARGS} -DskipTests -Dmaven.test.skip=true";;
+        p  ) EXTRA_RELEASE_ARGS="${EXTRA_RELEASE_ARGS:+$EXTRA_RELEASE_ARGS }-P$OPTARG" ;;
+        s  ) EXTRA_RELEASE_ARGS="${EXTRA_RELEASE_ARGS:+$EXTRA_RELEASE_ARGS }-DskipTests -Dmaven.test.skip=true";;
         h  ) help; exit;;
         \? ) echoerr "Unknown option: -$OPTARG"; help; exit 1;;
         :  ) echoerr "Missing option argument for -$OPTARG"; help; exit 1;;
@@ -96,32 +96,35 @@ done
 
 test_environment
 TEMP_FOLDER=$(mktemp -d -t release.XXXXXXX)
-ARGS="-Dmaven.repo.local=$TEMP_FOLDER -DreleaseVersion=$RELEASE_VERSION -Darguments=${EXTRA_RELEASE_ARGS}"
+# Use an array so -Darguments=" -DskipTests ..." survives as a single token; an
+# unquoted string would word-split inside the value and the forked release build
+# would not inherit the flags.
+ARGS=(-Dmaven.repo.local="$TEMP_FOLDER" -DreleaseVersion="$RELEASE_VERSION" -Darguments="$EXTRA_RELEASE_ARGS")
 
 if [ "$DEV_VERSION" != "" ]; then
   DEV_VERSION=${DEV_VERSION%-SNAPSHOT}-SNAPSHOT  # always add a snapshot if not there
-  ARGS+=" -DdevelopmentVersion=$DEV_VERSION"
+  ARGS+=(-DdevelopmentVersion="$DEV_VERSION")
 elif [[ "$RELEASE_VERSION" =~ .*\.0$ ]]; then
   # force version 2.19.0-SNAPSHOT if releasing 2.18.0
   # https://talk.openmrs.org/t/releasing-modules-using-semantic-versioning/7797/15
   VERSION_SPLIT=(${RELEASE_VERSION//./ })
   DEV_VERSION="${VERSION_SPLIT[0]}.$((${VERSION_SPLIT[1]}+1)).0-SNAPSHOT"
-  ARGS+=" -DdevelopmentVersion=$DEV_VERSION"
+  ARGS+=(-DdevelopmentVersion="$DEV_VERSION")
 fi
 
 EXIT_CODE=0
-echo "Calling mvn ${RELEASE_PLUGIN}:prepare ${ARGS} -B"
-$MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:prepare ${ARGS} -B || EXIT_CODE=$?
+echo "Calling mvn ${RELEASE_PLUGIN}:prepare ${ARGS[*]} -B"
+"$MAVEN_HOME/bin/mvn" ${RELEASE_PLUGIN}:prepare "${ARGS[@]}" -B || EXIT_CODE=$?
 if [[ "$EXIT_CODE" != "0" ]]; then
     echoerr "[ERROR] mvn release:prepare failed. Attempting to do a release rollback. "
-    $MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:rollback ${ARGS} -B || :
+    "$MAVEN_HOME/bin/mvn" ${RELEASE_PLUGIN}:rollback "${ARGS[@]}" -B || :
     echoerr "[ERROR] mvn release:prepare failed, scroll up the logs to see the error. release:rollback was attempted. Delete the tag from the repository (if it exists), check if the SCM tag is a ssh and not http and try again. "
     exit $EXIT_CODE
 fi
 
 EXIT_CODE=0
-echo "Calling mvn ${RELEASE_PLUGIN}:perform ${ARGS} -B"
-$MAVEN_HOME/bin/mvn ${RELEASE_PLUGIN}:perform ${ARGS} -B || EXIT_CODE=$?
+echo "Calling mvn ${RELEASE_PLUGIN}:perform ${ARGS[*]} -B"
+"$MAVEN_HOME/bin/mvn" ${RELEASE_PLUGIN}:perform "${ARGS[@]}" -B || EXIT_CODE=$?
 if [[ "$EXIT_CODE" != "0" ]]; then
     echoerr "[ERROR] mvn release:perform failed. Fix the problem and try another release number. "
     exit $EXIT_CODE
